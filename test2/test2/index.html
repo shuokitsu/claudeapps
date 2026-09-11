@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>紋章の王子（仮）</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="screen-title" class="screen active">
+    <h1>紋章の王子（仮）</h1>
+    <button id="btn-new-game">はじめから</button>
+    <button id="btn-continue">つづきから</button>
+  </div>
+
+  <div id="screen-dialogue" class="screen">
+    <div id="dialogue-stage">
+      <div id="dialogue-left" class="dialogue-portrait hidden"></div>
+      <div id="dialogue-right" class="dialogue-portrait hidden"></div>
+    </div>
+    <div id="dialogue-box">
+      <div id="dialogue-name"></div>
+      <div id="dialogue-text"></div>
+      <div id="dialogue-choices" class="hidden"></div>
+      <button id="btn-dialogue-next">つづける ▶</button>
+    </div>
+  </div>
+
+  <div id="screen-game" class="screen">
+    <div id="hud">
+      <div id="map-info"></div>
+      <div id="turn-info"></div>
+      <button id="btn-save">セーブ</button>
+      <button id="btn-end-turn">ターン終了</button>
+    </div>
+    <div id="game-body">
+      <div id="map-container">
+        <div id="map-grid"></div>
+      </div>
+      <div id="sidebar">
+        <div id="unit-panel"></div>
+        <div id="action-menu"></div>
+        <div id="log-panel"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay hidden">
+    <div id="overlay-content"></div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/dialogue.js"></script>
+  <script src="js/unit.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/battle.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/save.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/input.js"></script>
+</body>
+</html>

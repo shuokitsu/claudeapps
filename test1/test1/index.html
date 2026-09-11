@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>サウンドノベルゲーム</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="stage-viewport">
+<div id="stage">
+
+  <section id="title-screen" class="screen">
+    <h1 id="game-title"></h1>
+    <div class="menu-list">
+      <button id="btn-start">はじめる</button>
+      <button id="btn-load-title">つづきから</button>
+      <button id="btn-flowmap-title">マップ</button>
+      <button id="btn-settings-title">設定</button>
+    </div>
+  </section>
+
+  <section id="game-screen" class="screen hidden">
+    <div id="bg-layer"></div>
+
+    <div id="char-layer">
+      <div class="char-slot" id="char-left"></div>
+      <div class="char-slot" id="char-center"></div>
+      <div class="char-slot" id="char-right"></div>
+    </div>
+
+    <div id="choice-layer" class="hidden"></div>
+
+    <div id="text-box">
+      <div id="speaker-name"></div>
+      <div id="text-body"></div>
+    </div>
+
+    <div id="hud">
+      <button id="btn-auto" data-active="false">オート</button>
+      <button id="btn-backlog">バックログ</button>
+      <button id="btn-flowmap">マップ</button>
+      <button id="btn-save">セーブ</button>
+      <button id="btn-load">ロード</button>
+      <button id="btn-settings">設定</button>
+    </div>
+  </section>
+
+  <section id="backlog-screen" class="screen overlay hidden">
+    <h2>バックログ</h2>
+    <div id="backlog-list"></div>
+    <button class="btn-close" data-close="backlog-screen">閉じる</button>
+  </section>
+
+  <section id="settings-screen" class="screen overlay hidden">
+    <h2>設定</h2>
+    <div class="settings-row">
+      <span>テキスト表示</span>
+      <label><input type="radio" name="text-speed" value="typewriter"> タイプライター</label>
+      <label><input type="radio" name="text-speed" value="instant"> 瞬間表示</label>
+    </div>
+    <div class="settings-row settings-row-danger">
+      <span>進捗状況のリセット</span>
+      <button id="btn-reset-progress" class="btn-danger">セーブデータをすべて削除</button>
+    </div>
+    <button class="btn-close" data-close="settings-screen">閉じる</button>
+  </section>
+
+  <section id="saveload-screen" class="screen overlay hidden">
+    <h2 id="saveload-title">セーブ</h2>
+    <div id="save-slot-list"></div>
+    <button class="btn-close" data-close="saveload-screen">閉じる</button>
+  </section>
+
+  <section id="flowmap-screen" class="screen overlay hidden">
+    <h2>分岐マップ</h2>
+    <div id="flowmap-header">
+      <div>
+        <div id="flowmap-completion"></div>
+        <div id="flowmap-legend"><span class="fm-legend-swatch"></span>現在たどっているルート</div>
+      </div>
+      <div id="flowmap-zoom">
+        <button id="btn-flowmap-zoom-out" title="縮小">－</button>
+        <button id="btn-flowmap-zoom-in" title="拡大">＋</button>
+      </div>
+    </div>
+    <div id="flowmap-pane">
+      <svg id="flowmap-svg"></svg>
+      <p id="flowmap-empty" class="hidden">まだ記録がありません。プレイを進めると、たどった分岐がここに表示されます。</p>
+    </div>
+    <button class="btn-close" data-close="flowmap-screen">閉じる</button>
+  </section>
+
+  <div id="gamepad-status"></div>
+
+</div>
+</div>
+
+<script src="config/system.js"></script>
+<script src="scenario/sample/01_awakening.js"></script>
+<script src="scenario/sample/02_room.js"></script>
+<script src="scenario/sample/03_outside.js"></script>
+<script src="scenario/sample/04_endings.js"></script>
+<script src="js/scenario-parser.js"></script>
+<script src="js/scenario-graph.js"></script>
+<script src="js/flowmap.js"></script>
+<script src="js/gamepad.js"></script>
+<script src="js/save.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

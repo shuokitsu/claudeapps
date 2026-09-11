@@ -1,0 +1,408 @@
+* {
+  box-sizing: border-box;
+  font-family: "Meiryo", "Hiragino Sans", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  background: #222;
+  color: #eee;
+  -webkit-user-select: none;
+  user-select: none;
+  overscroll-behavior: none;
+}
+
+button, .tile {
+  touch-action: manipulation;
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+/* --- タイトル画面 --- */
+#screen-title.active {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+#screen-title h1 {
+  font-size: 2.2em;
+  letter-spacing: 0.1em;
+}
+
+#screen-title button {
+  font-size: 1.1em;
+  padding: 10px 32px;
+}
+
+/* --- ゲーム画面 --- */
+#hud {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 16px;
+  background: #333;
+  border-bottom: 2px solid #555;
+}
+
+#hud button {
+  margin-left: auto;
+}
+
+#hud button + button {
+  margin-left: 8px;
+}
+
+#game-body {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+}
+
+#map-container {
+  overflow: auto;
+  border: 2px solid #555;
+  background: #111;
+}
+
+#map-grid {
+  display: grid;
+}
+
+.tile {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.terrain-plain { background: #bfe38a; }
+.terrain-forest { background: #3f7d3f; }
+.terrain-mountain { background: #9c8060; }
+.terrain-wall { background: #5a5a5a; cursor: default; }
+
+.tile.highlight-move { outline: 3px solid #4aa3ff; outline-offset: -3px; }
+.tile.highlight-attack { outline: 3px solid #ff4a4a; outline-offset: -3px; }
+.tile.highlight-heal { outline: 3px solid #4aff8a; outline-offset: -3px; }
+.tile.selected { outline: 3px solid #fff200; outline-offset: -3px; }
+
+/* ゲームパッド／キーボード操作時のカーソル（outlineを使う上記ハイライトと衝突しないようbox-shadowで表現） */
+.tile.cursor { box-shadow: inset 0 0 0 3px #ffffff; }
+
+/* ゲームパッド／キーボードでフォーカス中のボタン */
+button.gp-focused {
+  outline: 3px solid #ffd24a;
+  outline-offset: 2px;
+}
+
+.unit-token {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: bold;
+  color: #fff;
+  border: 2px solid #222;
+  position: relative;
+}
+
+.unit-token.team-player { background: #2b6fd1; }
+.unit-token.team-enemy { background: #c33232; }
+.unit-token.acted { opacity: 0.45; }
+
+.hp-bar {
+  position: absolute;
+  bottom: -6px;
+  left: -2px;
+  width: 30px;
+  height: 4px;
+  background: #000;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.hp-fill { height: 100%; }
+.hp-fill.hp-high { background: #4aff6a; }
+.hp-fill.hp-mid { background: #ffd24a; }
+.hp-fill.hp-low { background: #ff4a4a; }
+
+/* --- サイドバー --- */
+#sidebar {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#unit-panel, #action-menu, #log-panel {
+  background: #2c2c2c;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+#unit-panel h3 {
+  margin: 0 0 6px 0;
+}
+
+#unit-panel p {
+  margin: 2px 0;
+  font-size: 0.9em;
+}
+
+.hint {
+  color: #888;
+  font-size: 0.85em;
+}
+
+.inventory-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.inv-btn {
+  text-align: left;
+  padding: 4px 8px;
+}
+
+.inv-btn.equipped {
+  border: 2px solid #4aa3ff;
+}
+
+#action-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#action-menu:empty {
+  display: none;
+}
+
+#log-panel {
+  min-height: 140px;
+  max-height: 200px;
+  overflow-y: auto;
+  font-size: 0.85em;
+}
+
+#log-panel p {
+  margin: 2px 0;
+}
+
+button {
+  cursor: pointer;
+  background: #444;
+  color: #eee;
+  border: 1px solid #666;
+  border-radius: 4px;
+  padding: 6px 10px;
+}
+
+button:hover:not(:disabled) {
+  background: #555;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* --- 会話パート --- */
+#screen-dialogue.active {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: linear-gradient(#2a2a3a, #17171f);
+}
+
+#dialogue-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 60px;
+}
+
+.dialogue-portrait {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.4;
+  transform: scale(0.92);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.dialogue-portrait.speaking {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.dialogue-portrait.hidden {
+  visibility: hidden;
+}
+
+.portrait-circle {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #2b6fd1;
+  border: 3px solid #cfd8ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.portrait-name {
+  font-size: 0.95em;
+  color: #ddd;
+}
+
+#dialogue-box {
+  background: #1c1c24;
+  border-top: 2px solid #555;
+  padding: 20px 40px 28px;
+  min-height: 140px;
+}
+
+#dialogue-name {
+  color: #7ec4ff;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+#dialogue-text {
+  font-size: 1.1em;
+  line-height: 1.6;
+  min-height: 3em;
+}
+
+#dialogue-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+#dialogue-choices.hidden,
+#btn-dialogue-next.hidden {
+  display: none;
+}
+
+#dialogue-choices button {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 1em;
+}
+
+#btn-dialogue-next {
+  margin-top: 12px;
+  float: right;
+  font-size: 1em;
+  padding: 8px 20px;
+}
+
+/* --- オーバーレイ --- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+#overlay-content {
+  background: #2c2c2c;
+  border: 2px solid #666;
+  border-radius: 8px;
+  padding: 24px 32px;
+  text-align: center;
+}
+
+.overlay-buttons {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* --- スマホ・タッチ操作向けレスポンシブ対応 --- */
+@media (max-width: 700px) {
+  #hud {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  #hud button {
+    padding: 10px 16px;
+    font-size: 1em;
+  }
+
+  #game-body {
+    flex-direction: column;
+    padding: 8px;
+  }
+
+  #map-container {
+    max-width: 100%;
+    max-height: 55vh;
+  }
+
+  #sidebar {
+    width: 100%;
+  }
+
+  #log-panel {
+    max-height: 120px;
+  }
+
+  #screen-title button {
+    padding: 14px 40px;
+    font-size: 1.15em;
+  }
+
+  #dialogue-stage {
+    padding: 20px 20px;
+  }
+
+  .portrait-circle {
+    width: 72px;
+    height: 72px;
+    font-size: 28px;
+  }
+
+  #dialogue-box {
+    padding: 16px 20px 22px;
+  }
+
+  #dialogue-choices button {
+    padding: 14px 14px;
+  }
+}

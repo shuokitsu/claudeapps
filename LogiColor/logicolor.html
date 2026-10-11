@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="ja">
+<meta name="robots" content="noindex, nofollow">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ロジカラ - カラーロジックパズル</title>
+    <title>ロジックカラー</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
@@ -86,7 +87,7 @@
             <div>
                 <h1
                     class="text-xl sm:text-2xl font-black tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-600 to-rose-600">
-                    ロジカラ
+                    ロジックカラー
                 </h1>
                 <p class="text-xs text-slate-500 font-bold">Logic Color Puzzle</p>
             </div>
@@ -116,7 +117,6 @@
             <div class="text-center">
                 <span id="stageTitle"
                     class="text-lg sm:text-xl font-black text-rose-900 bg-rose-50 px-4 py-1.5 rounded-full border border-rose-100 shadow-sm">
-                    ステージ 1
                 </span>
             </div>
 
@@ -227,7 +227,7 @@
     </main>
 
     <footer class="mt-6 text-center text-xs font-bold text-slate-400">
-        ロジカラ Web Edition &bull; 論理的思考力を育むカラーパズル
+        ロジックカラー &bull; 論理的思考力を育むカラーパズル
     </footer>
 
     <!-- ステージ選択ダイアログ -->
@@ -615,7 +615,7 @@
         ];
 
         window.onload = function () {
-            loadStage(0);
+            startRandomStage();
         };
 
         function preparePuzzle(stageIdx) {

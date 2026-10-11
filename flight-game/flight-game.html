@@ -1,498 +1,600 @@
 <!DOCTYPE html>
 <html lang="ja">
+<meta name="robots" content="noindex, nofollow">
+
 <head>
-<meta charset="UTF-8">
-<title>3D フライトゲーム</title>
-<style>
-  html, body { margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%; background: #000; }
-  canvas { display: block; }
-  #hud {
-    position: fixed; top: 10px; left: 10px; color: #fff; font-family: 'Segoe UI', sans-serif;
-    font-size: 16px; text-shadow: 0 0 4px #000, 0 0 4px #000; z-index: 10; user-select: none;
-    background: rgba(0,0,0,0.35); padding: 10px 14px; border-radius: 8px; line-height: 1.6;
-  }
-  #hud b { font-size: 20px; color: #ffe27a; }
-  #center-msg {
-    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    color: #fff; font-family: 'Segoe UI', sans-serif; text-align: center; z-index: 20;
-    text-shadow: 0 0 8px #000; user-select: none;
-  }
-  #center-msg h1 { font-size: 42px; margin: 0 0 10px; }
-  #center-msg p { font-size: 18px; margin: 4px 0; }
-  #help {
-    position: fixed; bottom: 10px; left: 10px; color: #fff; font-family: 'Segoe UI', sans-serif;
-    font-size: 13px; text-shadow: 0 0 4px #000; z-index: 10; user-select: none;
-    background: rgba(0,0,0,0.35); padding: 8px 12px; border-radius: 8px; line-height: 1.5;
-  }
-  #speedbar-wrap {
-    position: fixed; top: 10px; right: 10px; width: 160px; z-index: 10; color: #fff;
-    font-family: 'Segoe UI', sans-serif; font-size: 13px; text-shadow: 0 0 4px #000;
-    background: rgba(0,0,0,0.35); padding: 8px 12px; border-radius: 8px;
-  }
-  #speedbar-outer { width: 100%; height: 10px; background: rgba(255,255,255,0.2); border-radius: 5px; margin-top: 4px; overflow: hidden; }
-  #speedbar-inner { height: 100%; width: 0%; background: linear-gradient(90deg,#4fc3f7,#ffe27a,#ff5252); }
-  #warning {
-    position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
-    color: #fff; background: rgba(200,0,0,0.75); font-family: 'Segoe UI', sans-serif;
-    font-size: 20px; font-weight: bold; padding: 8px 22px; border-radius: 8px;
-    text-shadow: 0 0 4px #000; z-index: 15; user-select: none; display: none;
-    animation: warn-flash 0.6s infinite;
-  }
-  @keyframes warn-flash {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>3D フライトゲーム</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    #hud {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 16px;
+      text-shadow: 0 0 4px #000, 0 0 4px #000;
+      z-index: 10;
+      user-select: none;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 10px 14px;
+      border-radius: 8px;
+      line-height: 1.6;
+    }
+
+    #hud b {
+      font-size: 20px;
+      color: #ffe27a;
+    }
+
+    #center-msg {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      z-index: 20;
+      text-shadow: 0 0 8px #000;
+      user-select: none;
+    }
+
+    #center-msg h1 {
+      font-size: 42px;
+      margin: 0 0 10px;
+    }
+
+    #center-msg p {
+      font-size: 18px;
+      margin: 4px 0;
+    }
+
+    #help {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 13px;
+      text-shadow: 0 0 4px #000;
+      z-index: 10;
+      user-select: none;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 8px 12px;
+      border-radius: 8px;
+      line-height: 1.5;
+    }
+
+    #speedbar-wrap {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      width: 160px;
+      z-index: 10;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 13px;
+      text-shadow: 0 0 4px #000;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    #speedbar-outer {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      margin-top: 4px;
+      overflow: hidden;
+    }
+
+    #speedbar-inner {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #4fc3f7, #ffe27a, #ff5252);
+    }
+
+    #warning {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #fff;
+      background: rgba(200, 0, 0, 0.75);
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 20px;
+      font-weight: bold;
+      padding: 8px 22px;
+      border-radius: 8px;
+      text-shadow: 0 0 4px #000;
+      z-index: 15;
+      user-select: none;
+      display: none;
+      animation: warn-flash 0.6s infinite;
+    }
+
+    @keyframes warn-flash {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.4;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div id="hud">
-  高度: <b id="alt">0</b> m<br>
-  速度: <b id="spd">0</b><br>
-  スコア: <b id="score">0</b><br>
-  リング残り: <b id="rings">0</b><br>
-  経過時間: <b id="time">0:00</b>
-</div>
-<div id="warning"></div>
-<div id="speedbar-wrap">
-  スロットル
-  <div id="speedbar-outer"><div id="speedbar-inner"></div></div>
-</div>
-<div id="help">
-  ↑↓: ピッチ　←→: ロール(旋回)　Shift: 加速　Ctrl: 減速　R: リスタート
-</div>
-<div id="center-msg" style="display:none;">
-  <h1 id="msg-title"></h1>
-  <p id="msg-sub"></p>
-</div>
+  <div id="hud">
+    高度: <b id="alt">0</b> m<br>
+    速度: <b id="spd">0</b><br>
+    スコア: <b id="score">0</b><br>
+    リング残り: <b id="rings">0</b><br>
+    経過時間: <b id="time">0:00</b>
+  </div>
+  <div id="warning"></div>
+  <div id="speedbar-wrap">
+    スロットル
+    <div id="speedbar-outer">
+      <div id="speedbar-inner"></div>
+    </div>
+  </div>
+  <div id="help">
+    ↑↓: ピッチ　←→: ロール(旋回)　Shift: 加速　Ctrl: 減速　R: リスタート
+  </div>
+  <div id="center-msg" style="display:none;">
+    <h1 id="msg-title"></h1>
+    <p id="msg-sub"></p>
+  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script>
-(function() {
-  let scene, camera, renderer;
-  let plane, propeller;
-  let rings = [];
-  let clouds = [];
-  let mountains = [];
-  let score = 0;
-  let gameOver = false;
-  let crashed = false;
-  let elapsedTime = 0;
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script>
+    (function () {
+      let scene, camera, renderer;
+      let plane, propeller;
+      let rings = [];
+      let clouds = [];
+      let mountains = [];
+      let score = 0;
+      let gameOver = false;
+      let crashed = false;
+      let elapsedTime = 0;
 
-  const PLANE_RADIUS = 3;
-  const MAP_RADIUS = 2600;
-  const MAP_WARN_MARGIN = 300;
-  const MOUNTAIN_WARN_MARGIN = 25;
-  const GROUND_WARN_ALT = 20;
+      const PLANE_RADIUS = 3;
+      const MAP_RADIUS = 2600;
+      const MAP_WARN_MARGIN = 300;
+      const MOUNTAIN_WARN_MARGIN = 25;
+      const GROUND_WARN_ALT = 20;
 
-  const state = {
-    speed: 6,
-    minSpeed: 2,
-    maxSpeed: 22,
-    pitch: 0,     // rotation around local X
-    roll: 0,      // rotation around local Z
-    yaw: 0,       // heading around world Y
-    pos: new THREE.Vector3(0, 60, 0),
-  };
+      const state = {
+        speed: 6,
+        minSpeed: 2,
+        maxSpeed: 22,
+        pitch: 0,     // rotation around local X
+        roll: 0,      // rotation around local Z
+        yaw: 0,       // heading around world Y
+        pos: new THREE.Vector3(0, 60, 0),
+      };
 
-  function formatTime(t) {
-    const m = Math.floor(t / 60);
-    const s = Math.floor(t % 60);
-    return `${m}:${s.toString().padStart(2, '0')}`;
-  }
-
-  const keys = {};
-  window.addEventListener('keydown', (e) => {
-    keys[e.code] = true;
-    if (e.code === 'KeyR') restart();
-    if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code)) e.preventDefault();
-  });
-  window.addEventListener('keyup', (e) => { keys[e.code] = false; });
-
-  function init() {
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x8ecdf5);
-    scene.fog = new THREE.Fog(0x8ecdf5, 200, 1400);
-
-    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 3000);
-
-    renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
-    document.body.appendChild(renderer.domElement);
-
-    // Lights
-    const hemi = new THREE.HemisphereLight(0xffffff, 0x3a6a2a, 0.9);
-    scene.add(hemi);
-    const sun = new THREE.DirectionalLight(0xffffff, 0.9);
-    sun.position.set(300, 400, 100);
-    sun.castShadow = true;
-    sun.shadow.camera.left = -500;
-    sun.shadow.camera.right = 500;
-    sun.shadow.camera.top = 500;
-    sun.shadow.camera.bottom = -500;
-    sun.shadow.camera.far = 1500;
-    scene.add(sun);
-
-    buildGround();
-    buildMountains();
-    buildClouds();
-    buildPlane();
-    buildRings(14);
-
-    window.addEventListener('resize', onResize);
-    animate();
-  }
-
-  function onResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  }
-
-  function buildGround() {
-    const groundGeo = new THREE.PlaneGeometry(6000, 6000, 60, 60);
-    groundGeo.rotateX(-Math.PI / 2);
-    const pos = groundGeo.attributes.position;
-    for (let i = 0; i < pos.count; i++) {
-      const x = pos.getX(i), z = pos.getZ(i);
-      const h = Math.sin(x * 0.01) * 6 + Math.cos(z * 0.013) * 6 + (Math.random() - 0.5) * 2;
-      pos.setY(i, h);
-    }
-    groundGeo.computeVertexNormals();
-    const groundMat = new THREE.MeshLambertMaterial({ color: 0x4a8f3c });
-    const ground = new THREE.Mesh(groundGeo, groundMat);
-    ground.receiveShadow = true;
-    ground.position.y = -5;
-    scene.add(ground);
-
-    // simple river / patch grid for visual reference
-    const gridColor = new THREE.GridHelper(6000, 60, 0x2f6b28, 0x2f6b28);
-    gridColor.position.y = -4.9;
-    gridColor.material.opacity = 0.15;
-    gridColor.material.transparent = true;
-    scene.add(gridColor);
-  }
-
-  function buildMountains() {
-    const mat = new THREE.MeshLambertMaterial({ color: 0x6b7d8c });
-    for (let i = 0; i < 24; i++) {
-      const h = 80 + Math.random() * 220;
-      const r = 60 + Math.random() * 120;
-      const geo = new THREE.ConeGeometry(r, h, 7);
-      const m = new THREE.Mesh(geo, mat);
-      const angle = Math.random() * Math.PI * 2;
-      const dist = 700 + Math.random() * 1600;
-      m.position.set(Math.cos(angle) * dist, h / 2 - 20, Math.sin(angle) * dist);
-      m.castShadow = true;
-      m.userData = { r, h };
-      scene.add(m);
-      mountains.push(m);
-    }
-  }
-
-  function buildClouds() {
-    const mat = new THREE.MeshLambertMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 });
-    for (let i = 0; i < 40; i++) {
-      const group = new THREE.Group();
-      const puffs = 3 + Math.floor(Math.random() * 3);
-      for (let j = 0; j < puffs; j++) {
-        const geo = new THREE.SphereGeometry(8 + Math.random() * 10, 8, 8);
-        const puff = new THREE.Mesh(geo, mat);
-        puff.position.set((Math.random() - 0.5) * 24, (Math.random() - 0.5) * 6, (Math.random() - 0.5) * 24);
-        group.add(puff);
-      }
-      group.position.set((Math.random() - 0.5) * 3000, 80 + Math.random() * 260, (Math.random() - 0.5) * 3000);
-      scene.add(group);
-      clouds.push(group);
-    }
-  }
-
-  function buildPlane() {
-    plane = new THREE.Group();
-
-    const bodyMat = new THREE.MeshPhongMaterial({ color: 0xd23b3b, shininess: 60 });
-    const accentMat = new THREE.MeshPhongMaterial({ color: 0xffffff, shininess: 60 });
-    const glassMat = new THREE.MeshPhongMaterial({ color: 0x88ccee, shininess: 100, transparent: true, opacity: 0.7 });
-
-    // Fuselage
-    const fuseGeo = new THREE.CylinderGeometry(0.7, 1.0, 6, 12);
-    fuseGeo.rotateZ(Math.PI / 2);
-    const fuselage = new THREE.Mesh(fuseGeo, bodyMat);
-    fuselage.castShadow = true;
-    plane.add(fuselage);
-
-    // Nose cone
-    const noseGeo = new THREE.ConeGeometry(0.7, 1.4, 12);
-    noseGeo.rotateZ(-Math.PI / 2);
-    const nose = new THREE.Mesh(noseGeo, accentMat);
-    nose.position.x = 3.6;
-    plane.add(nose);
-
-    // Cockpit
-    const cockpitGeo = new THREE.SphereGeometry(0.55, 10, 10);
-    const cockpit = new THREE.Mesh(cockpitGeo, glassMat);
-    cockpit.position.set(0.8, 0.7, 0);
-    cockpit.scale.set(1.3, 1, 1);
-    plane.add(cockpit);
-
-    // Wings
-    const wingGeo = new THREE.BoxGeometry(1.6, 0.15, 9);
-    const wing = new THREE.Mesh(wingGeo, accentMat);
-    wing.position.set(-0.2, 0, 0);
-    wing.castShadow = true;
-    plane.add(wing);
-
-    // Tail wing (horizontal stabilizer)
-    const tailWingGeo = new THREE.BoxGeometry(1, 0.12, 3.4);
-    const tailWing = new THREE.Mesh(tailWingGeo, accentMat);
-    tailWing.position.set(-2.8, 0.2, 0);
-    plane.add(tailWing);
-
-    // Vertical stabilizer
-    const finGeo = new THREE.BoxGeometry(1.2, 1.4, 0.15);
-    const fin = new THREE.Mesh(finGeo, bodyMat);
-    fin.position.set(-2.8, 0.9, 0);
-    plane.add(fin);
-
-    // Propeller hub
-    propeller = new THREE.Group();
-    const hubGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.4, 8);
-    hubGeo.rotateZ(Math.PI / 2);
-    const hub = new THREE.Mesh(hubGeo, new THREE.MeshPhongMaterial({ color: 0x333333 }));
-    propeller.add(hub);
-    const bladeGeo = new THREE.BoxGeometry(0.1, 2.4, 0.25);
-    const blade1 = new THREE.Mesh(bladeGeo, new THREE.MeshPhongMaterial({ color: 0x222222 }));
-    const blade2 = blade1.clone();
-    blade2.rotation.x = Math.PI / 2;
-    propeller.add(blade1, blade2);
-    propeller.position.x = 4.3;
-    plane.add(propeller);
-
-    plane.position.copy(state.pos);
-    scene.add(plane);
-  }
-
-  function ringTexMaterial(color) {
-    return new THREE.MeshPhongMaterial({ color, emissive: color, emissiveIntensity: 0.25, shininess: 80 });
-  }
-
-  function buildRings(count) {
-    for (let i = 0; i < count; i++) {
-      addRing(i);
-    }
-  }
-
-  function addRing(index) {
-    const geo = new THREE.TorusGeometry(9, 0.9, 12, 24);
-    const mat = ringTexMaterial(0xffd23f);
-    const ring = new THREE.Mesh(geo, mat);
-
-    const angle = (index / 14) * Math.PI * 2 + Math.random() * 0.4;
-    const dist = 150 + (index % 7) * 90 + Math.random() * 60;
-    const height = 40 + Math.random() * 140;
-    ring.position.set(Math.cos(angle) * dist, height, Math.sin(angle) * dist);
-    ring.lookAt(new THREE.Vector3(0, height, 0));
-    ring.rotateY(Math.PI / 2 + (Math.random() - 0.5) * 0.6);
-    ring.castShadow = true;
-    ring.userData.passed = false;
-    scene.add(ring);
-    rings.push(ring);
-  }
-
-  function restart() {
-    score = 0;
-    crashed = false;
-    gameOver = false;
-    elapsedTime = 0;
-    document.getElementById('center-msg').style.display = 'none';
-    document.getElementById('warning').style.display = 'none';
-    state.speed = 6;
-    state.pitch = 0;
-    state.roll = 0;
-    state.yaw = 0;
-    state.pos.set(0, 60, 0);
-    plane.rotation.set(0, 0, 0);
-    plane.position.copy(state.pos);
-    rings.forEach(r => scene.remove(r));
-    rings = [];
-    buildRings(14);
-    updateHud();
-  }
-
-  function updateHud() {
-    document.getElementById('alt').textContent = Math.max(0, Math.round(state.pos.y));
-    document.getElementById('spd').textContent = state.speed.toFixed(1);
-    document.getElementById('score').textContent = score;
-    document.getElementById('rings').textContent = rings.length;
-    document.getElementById('time').textContent = formatTime(elapsedTime);
-    const pct = ((state.speed - state.minSpeed) / (state.maxSpeed - state.minSpeed)) * 100;
-    document.getElementById('speedbar-inner').style.width = Math.max(0, Math.min(100, pct)) + '%';
-  }
-
-  function showMessage(title, sub) {
-    document.getElementById('msg-title').textContent = title;
-    document.getElementById('msg-sub').textContent = sub;
-    document.getElementById('center-msg').style.display = 'block';
-  }
-
-  function updateWarning(msgs) {
-    const el = document.getElementById('warning');
-    if (msgs.length && !gameOver) {
-      el.textContent = '⚠ ' + msgs.join('　⚠ ');
-      el.style.display = 'block';
-    } else {
-      el.style.display = 'none';
-    }
-  }
-
-  function checkMountainDanger(margin) {
-    for (const m of mountains) {
-      const { r, h } = m.userData;
-      const baseY = m.position.y - h / 2;
-      const apexY = m.position.y + h / 2;
-      if (state.pos.y < baseY - margin || state.pos.y > apexY + margin) continue;
-      const dx = state.pos.x - m.position.x;
-      const dz = state.pos.z - m.position.z;
-      const horizDist = Math.sqrt(dx * dx + dz * dz);
-      const t = Math.max(0, Math.min(1, (state.pos.y - baseY) / h));
-      const allowedRadius = r * (1 - t) + margin;
-      if (horizDist < allowedRadius + PLANE_RADIUS) return true;
-    }
-    return false;
-  }
-
-  const clock = new THREE.Clock();
-
-  function animate() {
-    requestAnimationFrame(animate);
-    const dt = Math.min(clock.getDelta(), 0.05);
-
-    if (!gameOver) {
-      // Throttle
-      if (keys['ShiftLeft'] || keys['ShiftRight']) state.speed += 8 * dt;
-      if (keys['ControlLeft'] || keys['ControlRight']) state.speed -= 8 * dt;
-      state.speed = Math.max(state.minSpeed, Math.min(state.maxSpeed, state.speed));
-
-      // Pitch (up/down arrows) and roll (left/right arrows)
-      const pitchInput = (keys['ArrowUp'] ? 1 : 0) - (keys['ArrowDown'] ? 1 : 0);
-      const rollInput = (keys['ArrowRight'] ? 1 : 0) - (keys['ArrowLeft'] ? 1 : 0);
-
-      state.pitch += pitchInput * 0.9 * dt;
-      state.pitch = Math.max(-0.9, Math.min(0.9, state.pitch));
-      state.roll += rollInput * 1.4 * dt;
-      state.roll = Math.max(-1.1, Math.min(1.1, state.roll));
-
-      // auto-level when no input
-      if (rollInput === 0) state.roll *= (1 - 1.5 * dt);
-      if (pitchInput === 0) state.pitch *= (1 - 1.2 * dt);
-
-      // yaw follows roll (banking turn)
-      state.yaw -= state.roll * 0.8 * dt;
-
-      // Fuselage extends along local +X (nose), wings along local Z, up is Y.
-      // So roll (bank) must rotate about X, and pitch (nose up/down) about Z.
-      plane.rotation.set(0, 0, 0);
-      plane.rotation.order = 'YZX';
-      plane.rotation.y = state.yaw;
-      plane.rotation.z = state.pitch;
-      plane.rotation.x = state.roll;
-
-      // Move forward along plane's local +X after rotation mapping:
-      const forward = new THREE.Vector3(1, 0, 0);
-      forward.applyEuler(new THREE.Euler(0, state.yaw, 0, 'YXZ'));
-      const climb = Math.sin(state.pitch);
-      const flat = Math.cos(state.pitch);
-      const velocity = new THREE.Vector3(forward.x * flat, climb, forward.z * flat).multiplyScalar(state.speed);
-      // Stalling: at minimum throttle the plane can no longer sustain lift and sinks.
-      if (state.speed <= state.minSpeed + 0.001) {
-        velocity.y -= 6;
-      }
-      state.pos.addScaledVector(velocity, dt * 6);
-
-      plane.position.copy(state.pos);
-      propeller.rotation.x += dt * (10 + state.speed * 2);
-
-      elapsedTime += dt;
-
-      const warningMsgs = [];
-
-      // Ground collision / warning
-      if (state.pos.y < 2) {
-        crashGame('地面に激突しました！');
-      } else if (state.pos.y < GROUND_WARN_ALT) {
-        warningMsgs.push('地面に接近中！');
+      function formatTime(t) {
+        const m = Math.floor(t / 60);
+        const s = Math.floor(t % 60);
+        return `${m}:${s.toString().padStart(2, '0')}`;
       }
 
-      // Mountain collision / warning
-      if (!gameOver) {
-        if (checkMountainDanger(0)) {
-          crashGame('山に激突しました！');
-        } else if (checkMountainDanger(MOUNTAIN_WARN_MARGIN)) {
-          warningMsgs.push('山に接近中！');
+      const keys = {};
+      window.addEventListener('keydown', (e) => {
+        keys[e.code] = true;
+        if (e.code === 'KeyR') restart();
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault();
+      });
+      window.addEventListener('keyup', (e) => { keys[e.code] = false; });
+
+      function init() {
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x8ecdf5);
+        scene.fog = new THREE.Fog(0x8ecdf5, 200, 1400);
+
+        camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 3000);
+
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild(renderer.domElement);
+
+        // Lights
+        const hemi = new THREE.HemisphereLight(0xffffff, 0x3a6a2a, 0.9);
+        scene.add(hemi);
+        const sun = new THREE.DirectionalLight(0xffffff, 0.9);
+        sun.position.set(300, 400, 100);
+        sun.castShadow = true;
+        sun.shadow.camera.left = -500;
+        sun.shadow.camera.right = 500;
+        sun.shadow.camera.top = 500;
+        sun.shadow.camera.bottom = -500;
+        sun.shadow.camera.far = 1500;
+        scene.add(sun);
+
+        buildGround();
+        buildMountains();
+        buildClouds();
+        buildPlane();
+        buildRings(14);
+
+        window.addEventListener('resize', onResize);
+        animate();
+      }
+
+      function onResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      function buildGround() {
+        const groundGeo = new THREE.PlaneGeometry(6000, 6000, 60, 60);
+        groundGeo.rotateX(-Math.PI / 2);
+        const pos = groundGeo.attributes.position;
+        for (let i = 0; i < pos.count; i++) {
+          const x = pos.getX(i), z = pos.getZ(i);
+          const h = Math.sin(x * 0.01) * 6 + Math.cos(z * 0.013) * 6 + (Math.random() - 0.5) * 2;
+          pos.setY(i, h);
+        }
+        groundGeo.computeVertexNormals();
+        const groundMat = new THREE.MeshLambertMaterial({ color: 0x4a8f3c });
+        const ground = new THREE.Mesh(groundGeo, groundMat);
+        ground.receiveShadow = true;
+        ground.position.y = -5;
+        scene.add(ground);
+
+        // simple river / patch grid for visual reference
+        const gridColor = new THREE.GridHelper(6000, 60, 0x2f6b28, 0x2f6b28);
+        gridColor.position.y = -4.9;
+        gridColor.material.opacity = 0.15;
+        gridColor.material.transparent = true;
+        scene.add(gridColor);
+      }
+
+      function buildMountains() {
+        const mat = new THREE.MeshLambertMaterial({ color: 0x6b7d8c });
+        for (let i = 0; i < 24; i++) {
+          const h = 80 + Math.random() * 220;
+          const r = 60 + Math.random() * 120;
+          const geo = new THREE.ConeGeometry(r, h, 7);
+          const m = new THREE.Mesh(geo, mat);
+          const angle = Math.random() * Math.PI * 2;
+          const dist = 700 + Math.random() * 1600;
+          m.position.set(Math.cos(angle) * dist, h / 2 - 20, Math.sin(angle) * dist);
+          m.castShadow = true;
+          m.userData = { r, h };
+          scene.add(m);
+          mountains.push(m);
         }
       }
 
-      // Map boundary collision / warning
-      if (!gameOver) {
-        const distFromCenter = Math.hypot(state.pos.x, state.pos.z);
-        if (distFromCenter > MAP_RADIUS) {
-          crashGame('マップ範囲外に出ました！');
-        } else if (distFromCenter > MAP_RADIUS - MAP_WARN_MARGIN) {
-          warningMsgs.push('マップ範囲外に接近中！');
+      function buildClouds() {
+        const mat = new THREE.MeshLambertMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 });
+        for (let i = 0; i < 40; i++) {
+          const group = new THREE.Group();
+          const puffs = 3 + Math.floor(Math.random() * 3);
+          for (let j = 0; j < puffs; j++) {
+            const geo = new THREE.SphereGeometry(8 + Math.random() * 10, 8, 8);
+            const puff = new THREE.Mesh(geo, mat);
+            puff.position.set((Math.random() - 0.5) * 24, (Math.random() - 0.5) * 6, (Math.random() - 0.5) * 24);
+            group.add(puff);
+          }
+          group.position.set((Math.random() - 0.5) * 3000, 80 + Math.random() * 260, (Math.random() - 0.5) * 3000);
+          scene.add(group);
+          clouds.push(group);
         }
       }
 
-      updateWarning(warningMsgs);
+      function buildPlane() {
+        plane = new THREE.Group();
 
-      // Ring collisions / passing
-      for (let i = rings.length - 1; i >= 0; i--) {
-        const r = rings[i];
-        const d = r.position.distanceTo(plane.position);
-        if (d < 10 && !r.userData.passed) {
-          r.userData.passed = true;
-          score += 100;
-          scene.remove(r);
-          rings.splice(i, 1);
+        const bodyMat = new THREE.MeshPhongMaterial({ color: 0xd23b3b, shininess: 60 });
+        const accentMat = new THREE.MeshPhongMaterial({ color: 0xffffff, shininess: 60 });
+        const glassMat = new THREE.MeshPhongMaterial({ color: 0x88ccee, shininess: 100, transparent: true, opacity: 0.7 });
+
+        // Fuselage
+        const fuseGeo = new THREE.CylinderGeometry(0.7, 1.0, 6, 12);
+        fuseGeo.rotateZ(Math.PI / 2);
+        const fuselage = new THREE.Mesh(fuseGeo, bodyMat);
+        fuselage.castShadow = true;
+        plane.add(fuselage);
+
+        // Nose cone
+        const noseGeo = new THREE.ConeGeometry(0.7, 1.4, 12);
+        noseGeo.rotateZ(-Math.PI / 2);
+        const nose = new THREE.Mesh(noseGeo, accentMat);
+        nose.position.x = 3.6;
+        plane.add(nose);
+
+        // Cockpit
+        const cockpitGeo = new THREE.SphereGeometry(0.55, 10, 10);
+        const cockpit = new THREE.Mesh(cockpitGeo, glassMat);
+        cockpit.position.set(0.8, 0.7, 0);
+        cockpit.scale.set(1.3, 1, 1);
+        plane.add(cockpit);
+
+        // Wings
+        const wingGeo = new THREE.BoxGeometry(1.6, 0.15, 9);
+        const wing = new THREE.Mesh(wingGeo, accentMat);
+        wing.position.set(-0.2, 0, 0);
+        wing.castShadow = true;
+        plane.add(wing);
+
+        // Tail wing (horizontal stabilizer)
+        const tailWingGeo = new THREE.BoxGeometry(1, 0.12, 3.4);
+        const tailWing = new THREE.Mesh(tailWingGeo, accentMat);
+        tailWing.position.set(-2.8, 0.2, 0);
+        plane.add(tailWing);
+
+        // Vertical stabilizer
+        const finGeo = new THREE.BoxGeometry(1.2, 1.4, 0.15);
+        const fin = new THREE.Mesh(finGeo, bodyMat);
+        fin.position.set(-2.8, 0.9, 0);
+        plane.add(fin);
+
+        // Propeller hub
+        propeller = new THREE.Group();
+        const hubGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.4, 8);
+        hubGeo.rotateZ(Math.PI / 2);
+        const hub = new THREE.Mesh(hubGeo, new THREE.MeshPhongMaterial({ color: 0x333333 }));
+        propeller.add(hub);
+        const bladeGeo = new THREE.BoxGeometry(0.1, 2.4, 0.25);
+        const blade1 = new THREE.Mesh(bladeGeo, new THREE.MeshPhongMaterial({ color: 0x222222 }));
+        const blade2 = blade1.clone();
+        blade2.rotation.x = Math.PI / 2;
+        propeller.add(blade1, blade2);
+        propeller.position.x = 4.3;
+        plane.add(propeller);
+
+        plane.position.copy(state.pos);
+        scene.add(plane);
+      }
+
+      function ringTexMaterial(color) {
+        return new THREE.MeshPhongMaterial({ color, emissive: color, emissiveIntensity: 0.25, shininess: 80 });
+      }
+
+      function buildRings(count) {
+        for (let i = 0; i < count; i++) {
+          addRing(i);
         }
       }
 
-      if (rings.length === 0 && !gameOver) {
-        winGame();
+      function addRing(index) {
+        const geo = new THREE.TorusGeometry(9, 0.9, 12, 24);
+        const mat = ringTexMaterial(0xffd23f);
+        const ring = new THREE.Mesh(geo, mat);
+
+        const angle = (index / 14) * Math.PI * 2 + Math.random() * 0.4;
+        const dist = 150 + (index % 7) * 90 + Math.random() * 60;
+        const height = 40 + Math.random() * 140;
+        ring.position.set(Math.cos(angle) * dist, height, Math.sin(angle) * dist);
+        ring.lookAt(new THREE.Vector3(0, height, 0));
+        ring.rotateY(Math.PI / 2 + (Math.random() - 0.5) * 0.6);
+        ring.castShadow = true;
+        ring.userData.passed = false;
+        scene.add(ring);
+        rings.push(ring);
       }
 
-      // gentle cloud drift
-      clouds.forEach((c, i) => { c.position.x += Math.sin(i) * 0.01; });
+      function restart() {
+        score = 0;
+        crashed = false;
+        gameOver = false;
+        elapsedTime = 0;
+        document.getElementById('center-msg').style.display = 'none';
+        document.getElementById('warning').style.display = 'none';
+        state.speed = 6;
+        state.pitch = 0;
+        state.roll = 0;
+        state.yaw = 0;
+        state.pos.set(0, 60, 0);
+        plane.rotation.set(0, 0, 0);
+        plane.position.copy(state.pos);
+        rings.forEach(r => scene.remove(r));
+        rings = [];
+        buildRings(14);
+        updateHud();
+      }
 
-      // Camera follow (third-person, behind and above)
-      const camOffset = new THREE.Vector3(-14, 5, 0);
-      camOffset.applyEuler(new THREE.Euler(0, state.yaw, 0, 'YXZ'));
-      const desiredCamPos = plane.position.clone().add(camOffset).add(new THREE.Vector3(0, 3, 0));
-      camera.position.lerp(desiredCamPos, 1 - Math.pow(0.001, dt));
-      const lookTarget = plane.position.clone().add(forward.clone().multiplyScalar(10)).add(new THREE.Vector3(0, 1, 0));
-      camera.lookAt(lookTarget);
+      function updateHud() {
+        document.getElementById('alt').textContent = Math.max(0, Math.round(state.pos.y));
+        document.getElementById('spd').textContent = state.speed.toFixed(1);
+        document.getElementById('score').textContent = score;
+        document.getElementById('rings').textContent = rings.length;
+        document.getElementById('time').textContent = formatTime(elapsedTime);
+        const pct = ((state.speed - state.minSpeed) / (state.maxSpeed - state.minSpeed)) * 100;
+        document.getElementById('speedbar-inner').style.width = Math.max(0, Math.min(100, pct)) + '%';
+      }
 
-      updateHud();
-    }
+      function showMessage(title, sub) {
+        document.getElementById('msg-title').textContent = title;
+        document.getElementById('msg-sub').textContent = sub;
+        document.getElementById('center-msg').style.display = 'block';
+      }
 
-    renderer.render(scene, camera);
-  }
+      function updateWarning(msgs) {
+        const el = document.getElementById('warning');
+        if (msgs.length && !gameOver) {
+          el.textContent = '⚠ ' + msgs.join('　⚠ ');
+          el.style.display = 'block';
+        } else {
+          el.style.display = 'none';
+        }
+      }
 
-  function crashGame(reason) {
-    if (gameOver) return;
-    gameOver = true;
-    crashed = true;
-    updateWarning([]);
-    showMessage('クラッシュ！', `${reason || ''}　スコア: ${score}　経過時間: ${formatTime(elapsedTime)}　「R」キーでリスタート`);
-  }
+      function checkMountainDanger(margin) {
+        for (const m of mountains) {
+          const { r, h } = m.userData;
+          const baseY = m.position.y - h / 2;
+          const apexY = m.position.y + h / 2;
+          if (state.pos.y < baseY - margin || state.pos.y > apexY + margin) continue;
+          const dx = state.pos.x - m.position.x;
+          const dz = state.pos.z - m.position.z;
+          const horizDist = Math.sqrt(dx * dx + dz * dz);
+          const t = Math.max(0, Math.min(1, (state.pos.y - baseY) / h));
+          const allowedRadius = r * (1 - t) + margin;
+          if (horizDist < allowedRadius + PLANE_RADIUS) return true;
+        }
+        return false;
+      }
 
-  function winGame() {
-    gameOver = true;
-    updateWarning([]);
-    showMessage('クリア！', `全リング通過！ スコア: ${score}　経過時間: ${formatTime(elapsedTime)}　「R」キーでもう一度`);
-  }
+      const clock = new THREE.Clock();
 
-  init();
-})();
-</script>
+      function animate() {
+        requestAnimationFrame(animate);
+        const dt = Math.min(clock.getDelta(), 0.05);
+
+        if (!gameOver) {
+          // Throttle
+          if (keys['ShiftLeft'] || keys['ShiftRight']) state.speed += 8 * dt;
+          if (keys['ControlLeft'] || keys['ControlRight']) state.speed -= 8 * dt;
+          state.speed = Math.max(state.minSpeed, Math.min(state.maxSpeed, state.speed));
+
+          // Pitch (up/down arrows) and roll (left/right arrows)
+          const pitchInput = (keys['ArrowUp'] ? 1 : 0) - (keys['ArrowDown'] ? 1 : 0);
+          const rollInput = (keys['ArrowRight'] ? 1 : 0) - (keys['ArrowLeft'] ? 1 : 0);
+
+          state.pitch += pitchInput * 0.9 * dt;
+          state.pitch = Math.max(-0.9, Math.min(0.9, state.pitch));
+          state.roll += rollInput * 1.4 * dt;
+          state.roll = Math.max(-1.1, Math.min(1.1, state.roll));
+
+          // auto-level when no input
+          if (rollInput === 0) state.roll *= (1 - 1.5 * dt);
+          if (pitchInput === 0) state.pitch *= (1 - 1.2 * dt);
+
+          // yaw follows roll (banking turn)
+          state.yaw -= state.roll * 0.8 * dt;
+
+          // Fuselage extends along local +X (nose), wings along local Z, up is Y.
+          // So roll (bank) must rotate about X, and pitch (nose up/down) about Z.
+          plane.rotation.set(0, 0, 0);
+          plane.rotation.order = 'YZX';
+          plane.rotation.y = state.yaw;
+          plane.rotation.z = state.pitch;
+          plane.rotation.x = state.roll;
+
+          // Move forward along plane's local +X after rotation mapping:
+          const forward = new THREE.Vector3(1, 0, 0);
+          forward.applyEuler(new THREE.Euler(0, state.yaw, 0, 'YXZ'));
+          const climb = Math.sin(state.pitch);
+          const flat = Math.cos(state.pitch);
+          const velocity = new THREE.Vector3(forward.x * flat, climb, forward.z * flat).multiplyScalar(state.speed);
+          // Stalling: at minimum throttle the plane can no longer sustain lift and sinks.
+          if (state.speed <= state.minSpeed + 0.001) {
+            velocity.y -= 6;
+          }
+          state.pos.addScaledVector(velocity, dt * 6);
+
+          plane.position.copy(state.pos);
+          propeller.rotation.x += dt * (10 + state.speed * 2);
+
+          elapsedTime += dt;
+
+          const warningMsgs = [];
+
+          // Ground collision / warning
+          if (state.pos.y < 2) {
+            crashGame('地面に激突しました！');
+          } else if (state.pos.y < GROUND_WARN_ALT) {
+            warningMsgs.push('地面に接近中！');
+          }
+
+          // Mountain collision / warning
+          if (!gameOver) {
+            if (checkMountainDanger(0)) {
+              crashGame('山に激突しました！');
+            } else if (checkMountainDanger(MOUNTAIN_WARN_MARGIN)) {
+              warningMsgs.push('山に接近中！');
+            }
+          }
+
+          // Map boundary collision / warning
+          if (!gameOver) {
+            const distFromCenter = Math.hypot(state.pos.x, state.pos.z);
+            if (distFromCenter > MAP_RADIUS) {
+              crashGame('マップ範囲外に出ました！');
+            } else if (distFromCenter > MAP_RADIUS - MAP_WARN_MARGIN) {
+              warningMsgs.push('マップ範囲外に接近中！');
+            }
+          }
+
+          updateWarning(warningMsgs);
+
+          // Ring collisions / passing
+          for (let i = rings.length - 1; i >= 0; i--) {
+            const r = rings[i];
+            const d = r.position.distanceTo(plane.position);
+            if (d < 10 && !r.userData.passed) {
+              r.userData.passed = true;
+              score += 100;
+              scene.remove(r);
+              rings.splice(i, 1);
+            }
+          }
+
+          if (rings.length === 0 && !gameOver) {
+            winGame();
+          }
+
+          // gentle cloud drift
+          clouds.forEach((c, i) => { c.position.x += Math.sin(i) * 0.01; });
+
+          // Camera follow (third-person, behind and above)
+          const camOffset = new THREE.Vector3(-14, 5, 0);
+          camOffset.applyEuler(new THREE.Euler(0, state.yaw, 0, 'YXZ'));
+          const desiredCamPos = plane.position.clone().add(camOffset).add(new THREE.Vector3(0, 3, 0));
+          camera.position.lerp(desiredCamPos, 1 - Math.pow(0.001, dt));
+          const lookTarget = plane.position.clone().add(forward.clone().multiplyScalar(10)).add(new THREE.Vector3(0, 1, 0));
+          camera.lookAt(lookTarget);
+
+          updateHud();
+        }
+
+        renderer.render(scene, camera);
+      }
+
+      function crashGame(reason) {
+        if (gameOver) return;
+        gameOver = true;
+        crashed = true;
+        updateWarning([]);
+        showMessage('クラッシュ！', `${reason || ''}　スコア: ${score}　経過時間: ${formatTime(elapsedTime)}　「R」キーでリスタート`);
+      }
+
+      function winGame() {
+        gameOver = true;
+        updateWarning([]);
+        showMessage('クリア！', `全リング通過！ スコア: ${score}　経過時間: ${formatTime(elapsedTime)}　「R」キーでもう一度`);
+      }
+
+      init();
+    })();
+  </script>
 </body>
+
 </html>

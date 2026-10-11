@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+<meta name="robots" content="noindex, nofollow">
 
 <head>
     <meta charset="UTF-8">
@@ -39,16 +40,41 @@
             display: inline-block;
         }
 
-        #scoreDisplay { min-width: 150px; }
-        #stageDisplay { min-width: 100px; text-align: center; }
-        #healthDisplay { min-width: 60px; text-align: center; }
-        #difficultyDisplay { min-width: 120px; text-align: right; }
+        #scoreDisplay {
+            min-width: 150px;
+        }
+
+        #stageDisplay {
+            min-width: 100px;
+            text-align: center;
+        }
+
+        #healthDisplay {
+            min-width: 60px;
+            text-align: center;
+        }
+
+        #difficultyDisplay {
+            min-width: 120px;
+            text-align: right;
+        }
 
         @media (max-width: 768px) {
-            #scoreDisplay { min-width: 100px; }
-            #stageDisplay { min-width: 70px; }
-            #healthDisplay { min-width: 40px; }
-            #difficultyDisplay { min-width: 80px; }
+            #scoreDisplay {
+                min-width: 100px;
+            }
+
+            #stageDisplay {
+                min-width: 70px;
+            }
+
+            #healthDisplay {
+                min-width: 40px;
+            }
+
+            #difficultyDisplay {
+                min-width: 80px;
+            }
         }
 
         .v-control {
@@ -108,7 +134,8 @@
 <body class="flex flex-col items-center justify-start p-2 md:p-4 select-none">
 
     <div id="gameContainer" class="w-full max-w-4xl flex flex-col items-center space-y-2 md:space-y-4">
-        <div id="gameInfo" class="info-panel p-2 md:p-3 rounded-none w-full flex justify-between text-[10px] md:text-sm">
+        <div id="gameInfo"
+            class="info-panel p-2 md:p-3 rounded-none w-full flex justify-between text-[10px] md:text-sm">
             <span id="scoreDisplay" class="status-text">SCORE: 0</span>
             <span id="stageDisplay" class="status-text">STAGE: 1</span>
             <span id="healthDisplay" class="status-text">HP: 3</span>
@@ -123,7 +150,8 @@
             </div>
 
             <div id="gameControls" class="flex flex-col items-center space-y-2">
-                <button id="slowMotionButton" class="px-6 py-4 md:px-8 md:py-3 border-2 border-white font-bold rounded-none shadow-lg transition duration-150 transform active:scale-95 md:hover:scale-105">
+                <button id="slowMotionButton"
+                    class="px-6 py-4 md:px-8 md:py-3 border-2 border-white font-bold rounded-none shadow-lg transition duration-150 transform active:scale-95 md:hover:scale-105">
                     SLOW MOTION
                 </button>
                 <div id="controlsInfo" class="hidden md:block text-center text-[10px] opacity-60">
@@ -137,7 +165,8 @@
                 class="bg-black p-8 md:p-12 rounded-none shadow-2xl text-center border-2 border-white max-w-md w-full mx-4">
                 <h2 class="text-2xl md:text-4xl font-bold text-white mb-4" id="messageTitle"></h2>
                 <div class="text-white text-sm md:text-base mb-8" id="messageText"></div>
-                <button id="closeMessage" class="px-8 py-3 bg-white text-black font-bold rounded-none hover:bg-gray-200 transition duration-300 w-full"></button>
+                <button id="closeMessage"
+                    class="px-8 py-3 bg-white text-black font-bold rounded-none hover:bg-gray-200 transition duration-300 w-full"></button>
             </div>
         </div>
     </div>
@@ -875,8 +904,8 @@
         jBase.addEventListener('touchstart', (e) => { e.preventDefault(); if (jTouchId === null) { const touch = e.changedTouches[0]; jTouchId = touch.identifier; sound.init(); handleJoystick(touch); } });
         window.addEventListener('touchmove', (e) => { if (jTouchId !== null) { for (let i = 0; i < e.changedTouches.length; i++) { if (e.changedTouches[i].identifier === jTouchId) { handleJoystick(e.changedTouches[i]); } } } }, { passive: false });
         window.addEventListener('touchend', (e) => { if (jTouchId !== null) { for (let i = 0; i < e.changedTouches.length; i++) { if (e.changedTouches[i].identifier === jTouchId) { jTouchId = null; jStick.style.transform = ''; game.input.stickX = 0; game.input.stickY = 0; } } } });
-        UI.slowBtn.onmousedown = () => { if(!game.isClearing) { sound.init(); game.input.mouseSlow = true; } }; UI.slowBtn.onmouseup = UI.slowBtn.onmouseleave = () => game.input.mouseSlow = false;
-        UI.slowBtn.addEventListener('touchstart', (e) => { e.preventDefault(); e.stopPropagation(); if(!game.isClearing) { sound.init(); game.input.mouseSlow = true; } });
+        UI.slowBtn.onmousedown = () => { if (!game.isClearing) { sound.init(); game.input.mouseSlow = true; } }; UI.slowBtn.onmouseup = UI.slowBtn.onmouseleave = () => game.input.mouseSlow = false;
+        UI.slowBtn.addEventListener('touchstart', (e) => { e.preventDefault(); e.stopPropagation(); if (!game.isClearing) { sound.init(); game.input.mouseSlow = true; } });
         UI.slowBtn.addEventListener('touchend', (e) => { e.preventDefault(); e.stopPropagation(); game.input.mouseSlow = false; });
         const keys = { 'w': 'up', 's': 'down', 'a': 'left', 'd': 'right', 'arrowup': 'up', 'arrowdown': 'down', 'arrowleft': 'left', 'arrowright': 'right', 'enter': 'enter', ' ': 'space' };
         document.onkeydown = (e) => { const k = e.key.toLowerCase(); if (keys[k]) { game.input[keys[k]] = true; if (k === ' ' || k === 'enter') { game.input.confirm = true; if (game.isRunning || game.isTitle || game.isResult) e.preventDefault(); } } };

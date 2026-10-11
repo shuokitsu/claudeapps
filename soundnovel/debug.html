@@ -1,55 +1,59 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>シナリオデバッグビューア</title>
-<link rel="stylesheet" href="css/debug.css">
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>シナリオデバッグビューア</title>
+  <link rel="stylesheet" href="css/debug.css">
 </head>
+
 <body>
 
-<header id="header">
-  <div id="header-left">
-    <h1 id="scenario-title"></h1>
-    <div id="stats"></div>
-  </div>
-  <div id="header-actions">
-    <button id="btn-zoom-out" title="縮小">－</button>
-    <button id="btn-fit" title="全体表示">全体表示</button>
-    <button id="btn-zoom-in" title="拡大">＋</button>
-  </div>
-</header>
+  <header id="header">
+    <div id="header-left">
+      <h1 id="scenario-title"></h1>
+      <div id="stats"></div>
+    </div>
+    <div id="header-actions">
+      <button id="btn-zoom-out" title="縮小">－</button>
+      <button id="btn-fit" title="全体表示">全体表示</button>
+      <button id="btn-zoom-in" title="拡大">＋</button>
+    </div>
+  </header>
 
-<div id="body">
-  <div id="graph-pane">
-    <svg id="graph-svg"></svg>
-    <p id="graph-hint">ドラッグでパン / ホイールでズーム / ノードをクリックで詳細表示</p>
+  <div id="body">
+    <div id="graph-pane">
+      <svg id="graph-svg"></svg>
+      <p id="graph-hint">ドラッグでパン / ホイールでズーム / ノードをクリックで詳細表示</p>
+    </div>
+
+    <aside id="side-panel">
+      <section id="warnings-section">
+        <h2>警告 <span id="warnings-count"></span></h2>
+        <ul id="warnings-list"></ul>
+      </section>
+      <section id="flags-section">
+        <h2>フラグ <span id="flags-count"></span></h2>
+        <ul id="flags-list"></ul>
+      </section>
+      <section id="detail-section">
+        <h2>シーン詳細</h2>
+        <div id="detail-content">
+          <p class="detail-placeholder">グラフ上のシーンをクリックすると、ここにコマンド内容が表示されます。</p>
+        </div>
+      </section>
+    </aside>
   </div>
 
-  <aside id="side-panel">
-    <section id="warnings-section">
-      <h2>警告 <span id="warnings-count"></span></h2>
-      <ul id="warnings-list"></ul>
-    </section>
-    <section id="flags-section">
-      <h2>フラグ <span id="flags-count"></span></h2>
-      <ul id="flags-list"></ul>
-    </section>
-    <section id="detail-section">
-      <h2>シーン詳細</h2>
-      <div id="detail-content">
-        <p class="detail-placeholder">グラフ上のシーンをクリックすると、ここにコマンド内容が表示されます。</p>
-      </div>
-    </section>
-  </aside>
-</div>
-
-<script src="scenario/sample/01_awakening.js"></script>
-<script src="scenario/sample/02_room.js"></script>
-<script src="scenario/sample/03_outside.js"></script>
-<script src="scenario/sample/04_endings.js"></script>
-<script src="js/scenario-parser.js"></script>
-<script src="js/scenario-graph.js"></script>
-<script src="js/debug-main.js"></script>
+  <script src="scenario/sample/01_awakening.js"></script>
+  <script src="scenario/sample/02_room.js"></script>
+  <script src="scenario/sample/03_outside.js"></script>
+  <script src="scenario/sample/04_endings.js"></script>
+  <script src="js/scenario-parser.js"></script>
+  <script src="js/scenario-graph.js"></script>
+  <script src="js/debug-main.js"></script>
 </body>
+
 </html>
